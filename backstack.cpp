@@ -15,7 +15,7 @@ struct S {
 		StackTrace st; st.load_here(32);
 
 		TraceResolver tr; tr.load_stacktrace(st);
-		for (size_t i = 0; i < st.size(); ++i) {
+		for (size_t i = 0; i < st.size() ; ++i) {
 			ResolvedTrace trace = tr.resolve(st[i]);
 			std::cout << "#" << i
 				<< " " << trace.object_filename
@@ -25,12 +25,25 @@ struct S {
 		}
 	}
 	void wards_backtrace3() {
-		StackTrace st; st.load_here(32);
+		StackTrace st; st.load_here(1000);
 		Printer p;
+		p.color_mode = ColorMode::always;
 		p.object = true;
-		p.color = true;
 		p.address = true;
 		p.print(st, stderr);
+	}
+
+	void wards_backtrace4() {
+
+		std::ostringstream oss;
+		StackTrace st; st.load_here(1000);
+		Printer p;
+		p.color_mode = ColorMode::always;
+		p.object = true;
+		p.address = true;
+		p.print(st, oss);
+
+		std::cout << oss.str();
 	}
 };
 
@@ -60,6 +73,13 @@ void foo5() {
 	printer.print(st, stdout);
 }
 
+void foo6() {
+
+	S lala;
+	lala.wards_backtrace4();
+}
+
+
 int main() {
 
 	std::cout << "-----------------------------------------------------------------------------------------------------------" << "\n\n";
@@ -77,4 +97,8 @@ int main() {
 	std::cout << "-----------------------------------------------------------------------------------------------------------" << "\n\n";
 	std::cout << "backward-cpp STACKTRACE 4" << "\n\n";
 	foo5();
+
+	std::cout << "-----------------------------------------------------------------------------------------------------------" << "\n\n";
+	std::cout << "backward-cpp STACKTRACE 5 streams" << "\n\n";
+	foo6();
 }
